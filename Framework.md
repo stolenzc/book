@@ -1,10 +1,8 @@
-# 框架使用手册
+# Django
 
-# 一. Django使用
+## 注意事项
 
-## 0. 注意事项
-
-### 0.1 版本冲突
+### 版本冲突
 
 python3.7和django1.11.11版本冲突，解决办法，运行报错后点击报错代码路径将该行最后的逗号删除即可
 
@@ -31,9 +29,9 @@ if query is not None:
 return query
 ```
 
-## 1. 基础使用和命令
+## 基础使用和命令
 
-### 1.1 尚未创建项目
+### 尚未创建项目
 
 `python3 -m venv venv` 或 `virtualenv --python=python的安装路径 venv` - 创建虚拟环境
 
@@ -49,7 +47,7 @@ return query
 
 `pip freeze > requirements.txt` - 将依赖项写入到requirements.txt文件中
 
-### 1.2 已有项目和虚拟环境
+### 已有项目和虚拟环境
 
 `pip install django==2.1.13 pymysql` - 安装相关依赖项
 
@@ -57,7 +55,7 @@ return query
 
 `django-admin startproject 项目名 .` - 在当前路径下创建Django项目
 
-### 1.3 从版本库创建项目
+### 从版本库创建项目
 
 `git clone 项目地址` - 克隆项目
 
@@ -75,7 +73,7 @@ return query
 
 如果安装mysqlclient报错需要先安装:`yum install mysql-devel`
 
-### 1.4 创建应用
+### 创建应用
 
 一个django项目中可以有多个应用
 
@@ -87,13 +85,13 @@ return query
 
 `python manage.py runserver 0.0.0.0:7999` - 指定端口和ip运行应用
 
-### 1.5 其他命令
+### 其他命令
 
 `python manage.py clearsessions` - 清除缓存，会删除数据库中过期session。
 
-## 2. 配置
+## 配置
 
-### 2.1 配置数据库
+### 配置数据库
 
 `项目名>settings`配置
 
@@ -129,7 +127,7 @@ import pymysql
 pymsqy.install_as_MySQLdb()
 ```
 
-### 2.2 数据库模型正向迁移
+### 数据库模型正向迁移
 
 正向迁移（models->数据库）
 
@@ -163,7 +161,7 @@ class Fruit(models.Model):
 
 `python manage.py migrate`	进行数据库迁移
 
-### 2.3 数据库模型反向迁移
+### 数据库模型反向迁移
 
 正向迁移（数据库->models）
 
@@ -186,7 +184,7 @@ class Emp(models.Model):
 
 说明：如果自定义变量名不是数据库的列名，需要在后面用`db_column='列名'`进行指定，
 
-### 2.4 超级管理员配置
+### 超级管理员配置
 
 `应用名>admin`
 
@@ -209,8 +207,8 @@ admin.site.register(Fruit, FruitAdmin)
 
 在管理员页面显示自定义应用名：
 
->在`应用文件夹>apps>PollsConfig`中添加：verbose_name = '自定义的名字'
->设置`init`文件：default_app_config = '应用名.apps.PollsConfig'、
+1. 在`应用文件夹>apps>PollsConfig`中添加：verbose_name = '自定义的名字'
+2. 设置`init`文件：default_app_config = '应用名.apps.PollsConfig'、
 
 对有外键关联的对象，在后台管理需要显示名称，需要在被关联的模型对象中写`__str__`魔法方法
 
@@ -234,27 +232,23 @@ class VoteAppConfig(AppConfig):
     verbose_name = '投票应用'
 ```
 
-### 2.5 打开Django交互式环境
+### 打开Django交互式环境
 
 `python manage.py shell `
 
-### 2.6 配置静态文件支持访问
+### 配置静态文件支持访问
 
 项目名>setting中添加:
 
 `STATICFILES_DIRS = [os.path.join(BASE_DIR, '静态文件路径'), ]`
 
-## 3. 页面开发步骤
+## 页面开发步骤
 
 MTV MVC
 
-1. 先把MTV每个字母什么意思，中英文说一次
-
-2. 再解释每一层
-
 Model模型层主要做数据层抽象，主要两个作用，一个使用面向对象的思维操作数据（ORM对象关系映射）DAO Data Access Object。另外一个作用就是隔离具体的数据库sql操作，举例来说就是如果原来用的mysql，后来要变为Orcal，不用修改大量的代码。
 
-### 3.1 模型(models)
+### 模型(models)
 
 #### 字段类
 
@@ -309,20 +303,13 @@ Model模型层主要做数据层抽象，主要两个作用，一个使用面向
 ForeignKey属性
 
 1. limit_choices_to：值是一个Q对象或返回一个Q对象，用于限制后台显示哪些对象。
-
 2. related_name：用于获取关联对象的关联管理器对象（反向查询），如果不允许反向，该属性应该被设置为`'+'`，或者以`'+'`结尾。
-
 3. to_field：指定关联的字段，默认关联对象的主键字段。
-
 4. db_constraint：是否为外键创建约束，默认值为True。
-
 5. on_delete：外键关联的对象被删除时对应的动作，可取的值包括django.db.models中定义的：
-
-> CASCADE：级联删除。（一般不这样做，一般删除前先检查关联，有关联提示用户）
->
-> PROTECT：抛出ProtectedError异常，阻止删除引用的对象。
->
-> SET_NULL：把外键设置为null，当null属性被设置为True时才能这么做。SET_DEFAULT：把外键设置为默认值，提供了默认值才能这么做。
+    - CASCADE：级联删除。（一般不这样做，一般删除前先检查关联，有关联提示用户）
+    - PROTECT：抛出ProtectedError异常，阻止删除引用的对象。
+    - SET_NULL：把外键设置为null，当null属性被设置为True时才能这么做。SET_DEFAULT：把外键设置为默认值，提供了默认值才能这么做。
 
 ManyToManyField属性
 
@@ -355,7 +342,7 @@ upload_to：图片上传地址
 | verbose_name          | 为对象设定人类可读的名称                                     |
 | verbose_name_plural   | 设定对象的复数名称                                           |
 
-### 3.2 视图(views)
+### 视图(views)
 
 ```python
 def index(request: HttpRequest):
@@ -368,78 +355,70 @@ def index(request: HttpRequest):
 
 获取的参数：HttpRequest（封装了浏览器发给服务器的请求）
 
-> 1.  request.method - 请求方法的方法(POST/GET/PUT/DELETE)
-> 2.  request.path - 获取请求的链接
-> 3.  request.get_full_path - 获取带查询参数的资源路径（GET参数）
-> 4.  request.is_ajax() - 判断是否是ajax请求，返回值True/False
-> 5.  request.META - 获取请求头
->     request.META['REMOTE_ADDR'] - 
-> 6.  request.POST / GET.get('参数名', 默认值) - 获取传递的数据
-> 7.  request.POST / GET['参数名'] - 获取传递的数据，没有会报错
-> 8.  request.body / FILES - 获取上传的文件
-> 9.  request.COOKIES - 获取本站点的Cookie信息
-> 10.  request.get_signed_cookie - 获取带签名的cookie信息
-> 11.  request.session.flush() - 清除session，不会删除数据库session记录
+1. request.method - 请求方法的方法(POST/GET/PUT/DELETE)
+2. request.path - 获取请求的链接
+3. request.get_full_path - 获取带查询参数的资源路径（GET参数）
+4. request.is_ajax() - 判断是否是ajax请求，返回值True/False
+5. request.META - 获取请求头
+    > request.META['REMOTE_ADDR'] - 获取客户端IP
+6. request.POST / GET.get('参数名', 默认值) - 获取传递的数据
+7. request.POST / GET['参数名'] - 获取传递的数据，没有会报错
+8. request.body / FILES - 获取上传的文件
+9. request.COOKIES - 获取本站点的Cookie信息
+10. request.get_signed_cookie - 获取带签名的cookie信息
+11. request.session.flush() - 清除session，不会删除数据库session记录
 
 返回值：HttpResponse（封装了服务器给浏览器的响应）
 
-> 1.  HttpResponse(字节串/字符串)
->       指定返回响应的类型用：content_type='application/json'或者使用：resp['content-type'] = 'application/pdf'
->       指定返回响应的状态码用：resp.status_code = 204
->       指定文件网页中打开：resp['content-disposition'] = 'inline'
->       指定文件下载（中文要使用百分号编码）：resp['content-disposition'] = 'attachment; filename="python入门教程"'
-> 2.  render(HttpRequest对象, '模板页的名字', 渲染到页面上的数据:dict)
-> 3.  redirect('重定向地址')
-> 4.  JsonResponse(返回json数据)
+1. HttpResponse(字节串/字符串)
+    > 指定返回响应的类型用：content_type='application/json'或者使用：resp['content-type'] = 'application/pdf'
+    > 指定返回响应的状态码用：resp.status_code = 204
+    > 指定文件网页中打开：resp['content-disposition'] = 'inline'
+    > 指定文件下载（中文要使用百分号编码）：resp['content-disposition'] = 'attachment; filename="python入门教程"'
+2. render(HttpRequest对象, '模板页的名字', 渲染到页面上的数据:dict)
+3. redirect('重定向地址')
+4. JsonResponse(返回json数据)
 
 模型的CRUD
 
 Create：
 
-> 1.  模型名.objects.create(字段1=值1, 字段2=值2)
->
-> 2.  对象 = 模型名()
->
->  对象.save()
->
-> 3.  模型名('参数1', '参数2').save()
+1. 模型名.objects.create(字段1=值1, 字段2=值2)
+2. - 对象 = 模型名()
+   - 对象.save()
+3. 模型名('参数1', '参数2').save()
 
 Update:
 
->   1.  查询对象.update(参数1=值1)
->
->       说明：update更新方法无法使auto_now等时间约束条件生效
->
->   2.  查询对象.参数 = 值
->
->       查询对象.save()
->
->       说明：save可以使auto_now生效
+1. - 查询对象.update(参数1=值1)
+   - 说明：update更新方法无法使auto_now等时间约束条件生效
+2. - 查询对象.参数 = 值
+   - 查询对象.save()
+   - 说明：save可以使auto_now生效
 
 Read：
 
 查询模型中的数据：`Subject.objects.all()`
 
->   all()   查询所有
->   filter(查询条件)    查询满足条件的值，需要在列的后面加双下划线再加条件
->
->   ​	`name='洛昊'`             精确查找
->   ​	`name__contain='洛'`      名字中包含洛的
->   ​	`name__icontain='洛'`     名字中包含洛的，忽略大小写
->   ​	`name__startswith='洛'`   名字以洛开头的，istartswith为忽略大小写
->   ​	`name__endswith='昊'`     名字以昊结尾的，iendswith为忽略大小写 
->   ​	`exact='洛昊'`            精确匹配，iexact为忽略大小写的精确匹配
->   ​	`in`                      集合运算
->   ​	`gt/gte/lt/lte`           大于/大于等于/小于/小于等于
->   ​	`range`                   范围查询
->   ​	`year/month/day/week_day/hour/minute/second`  时间和日期
->   ​	`isnull`                  空值(True)或非空值(False)
->   ​	`search`                  基于全文的检索
->   ​	`regex/iregex`            基于正则表达式的模糊匹配
+1. all() - 查询所有
+2. filter(查询条件) - 查询满足条件的值，需要在列的后面加双下划线再加条件
+- `name='王大锤'` - 精确查找
+- `name__contain='王'` - 名字中包含王的
+- `name__icontain='王'` - 名字中包含王的，忽略大小写
+- `name__startswith='王'` - 名字以王开头的，istartswith为忽略大小写
+- `name__endswith='锤'` - 名字以锤结尾的，iendswith为忽略大小写 
+- `exact='王大锤'` - 精确匹配，iexact为忽略大小写的精确匹配
+- `in` - 集合运算
+- `gt/gte/lt/lte` - 大于/大于等于/小于/小于等于
+- `range` - 范围查询
+- `year/month/day/week_day/hour/minute/second` - 时间和日期
+- `isnull` - 空值(True)或非空值(False)
+- `search` - 基于全文的检索
+- `regex/iregex` - 基于正则表达式的模糊匹配
 
 Delete：
 
->   查询对象.delete()
+1. 查询对象.delete()
 
 Q对象和F对象：
 
@@ -483,11 +462,10 @@ F语法(将字段值与表内其他字段比较)：`Article.objects.filter(fangw
 
 执行原生SQL语句：
 
-> 1. `Emp.objects.raw('sql语句')`
->
-> 2. `django.db.connections['数据库配置名']` --> `cursor()` --> `execute('sql语句')` --> `fetchall()/fetchone()/fetchmany()`
+1. `Emp.objects.raw('sql语句')`
+2. `django.db.connections['数据库配置名']` --> `cursor()` --> `execute('sql语句')` --> `fetchall()/fetchone()/fetchmany()`
 
-### 3.3 模板(templates)
+### 模板(templates)
 
 for循环语法：
 
@@ -548,7 +526,7 @@ Django模板提交表单需要加上csrf令牌，通常做法是在表单开头�
 
 `{% verbatin %}{% endvarbatin %}` - django模板渲染忽略不进行渲染的部分
 
-## 4. Form表单对象
+## Form表单对象
 
 form表单对象是专门用来验证表单数据的对象
 
@@ -601,9 +579,9 @@ if form.is_valid():
 
 在调用表单对象有三个重要的方法：
 
->   1.  is_valid - 进行表单验证
->   2.  errors - 返回验证错误产生的错误信息（字典）
->   3.  cleaned_data - 返回验证通过的数据（字典）
+1. is_valid - 进行表单验证
+2. errors - 返回验证错误产生的错误信息（字典）
+3. cleaned_data - 返回验证通过的数据（字典）
 
 ```python
 form = LoginForm(request.POST)
@@ -612,7 +590,7 @@ errors = form.errors
 cleaned_data = form.cleaned_data
 ```
 
-## 5. 接入Redis缓存服务
+## 接入Redis缓存服务
 
 安装三方库django-redis：`pip install django-redis`
 
@@ -677,23 +655,18 @@ redis_cli = get_redis_connection(alias='default')
 redis_cli.get()
 ```
 
-## 6.cookie/session/token
+## cookie/session/token
 
-### 6.1 用户跟踪方法：
+### 用户跟踪方法：
 
->   1.  URL重写：`http://foo.com/bar/?sessionid=xyz`
->
->   2.  隐藏域/隐式表单域/埋点：`<input type="hidden" name="sessionid" value="xyz">`
->
->   3.  浏览器本地存储：cookie/localStorage/sessionStorage
->
->       cookie：sessionid=xyz - 每次请求自动带上
->
->       localStorage.sessionid="xyz" - 本地存储，主动清空才消失
->
->       sessionStorage.sessionid="xyz" - 本地存储，浏览器关闭自动消失
+1. URL重写：`http://foo.com/bar/?sessionid=xyz`
+2. 隐藏域/隐式表单域/埋点：`<input type="hidden" name="sessionid" value="xyz">`
+3. 浏览器本地存储：cookie/localStorage/sessionStorage
+    - cookie：sessionid=xyz - 每次请求自动带上
+    - localStorage.sessionid="xyz" - 本地存储，主动清空才消失
+    - sessionStorage.sessionid="xyz" - 本地存储，浏览器关闭自动消失
 
-### 6.2 读写cookie
+### 读写cookie
 
 读取请求头中的cookie信息：`request.COOKIES['key']` - 返回key对应的value
 
@@ -703,13 +676,12 @@ redis_cli.get()
 
 读写带签名的cookie，salt为签名内容（会进行加密链接到value后面）：
 
->   response.set_signed_cookie(key, value, salt, 超时时间)
->
->   request.get_signed_cookie(key, salt)
+- response.set_signed_cookie(key, value, salt, 超时时间)
+- request.get_signed_cookie(key, salt)
 
-## 7. 日志和debug-toolbar
+## 日志和debug-toolbar
 
-### 7.1 日志配置
+### 日志配置
 
 `项目名>setting:`
 
@@ -785,7 +757,7 @@ handlers 处理日志
 
 formaters 设置记录格式
 
-### 7.2 django-debug-toolbar配置
+### django-debug-toolbar配置
 
 说明：不能用于前后端分离项目
 
@@ -813,9 +785,9 @@ import debug_toolbar
 urlpatterns.insert(0, path('__debug__/', include(debug_toolbar.urls)))
 ```
 
-## 8. 模型中对应关系
+## 模型中对应关系
 
-### 8.1 一对一
+### 一对一
 
 模型定义方法：
 
@@ -827,9 +799,8 @@ urlpatterns.insert(0, path('__debug__/', include(debug_toolbar.urls)))
 
 定义数据：
 
->   stu = Student()
->
->   info = StudentInfo()
+- `stu = Student()`
+- `info = StudentInfo()`
 
 `stu.info` - 返回关联的对象
 
@@ -843,7 +814,7 @@ urlpatterns.insert(0, path('__debug__/', include(debug_toolbar.urls)))
 
 `info.a` - 返回关联的对象
 
-### 8.2 一对多
+### 一对多
 
 模型定义方法：
 
@@ -853,9 +824,8 @@ urlpatterns.insert(0, path('__debug__/', include(debug_toolbar.urls)))
 
 定义数据：
 
->   stu = Student.objects.filter().first()
->
->   grade = Grade.objects.filter().first()
+- `stu = Student.objects.filter().first()`
+- `grade = Grade.objects.filter().first()`
 
 `stu.g = g` - 给外键列加值
 
@@ -867,7 +837,7 @@ urlpatterns.insert(0, path('__debug__/', include(debug_toolbar.urls)))
 
 `grade.s.all()` - 获取所有关联对象的列表
 
-### 8.3 多对多
+### 多对多
 
 模型定义方法：
 
@@ -877,9 +847,8 @@ urlpatterns.insert(0, path('__debug__/', include(debug_toolbar.urls)))
 
 定义数据：
 
->   stu = Student.objects.get(pk=1)
->
->   cou = Course.objects.get(pk=5)
+- `stu = Student.objects.get(pk=1)`
+- `cou = Course.objects.get(pk=5)`
 
 `stu.c.add(cou)` - 向中间表中添加一条数据
 
@@ -891,25 +860,23 @@ urlpatterns.insert(0, path('__debug__/', include(debug_toolbar.urls)))
 
 `cou.d.add(stu)` - 向中间表中添加一条数据
 
-### 8.4 外键关联数据保护
+### 外键关联数据保护
 
 定义模型时设置`on_delete`的值：
 
->   models.CASCADE: 级联删除，主键删除，外键数据也删除
->
->   models.PROTECT: 保护模式，不让删除主键信息
->
->   models.SET_NULL: 滞空模式，删除主键，外键滞空
+- models.CASCADE: 级联删除，主键删除，外键数据也删除
+- models.PROTECT: 保护模式，不让删除主键信息
+- models.SET_NULL: 滞空模式，删除主键，外键滞空
 
-## 9. url路由
+## url路由
 
-### 9.1 路由分发
+### 路由分发
 
 示例：`path('app/', include('app.urls'))`
 
 说明：链接到本地址的url中如果包含app，则又链接到app.urls路由文件中去
 
-### 9.2 路由重命名
+### 路由重命名
 
 分发路由重命名：
 
@@ -931,7 +898,7 @@ urlpatterns.insert(0, path('__debug__/', include(debug_toolbar.urls)))
 
 说明：使用reverse重新拼接url，如需传参数，使用kwargs或者args
 
-### 9.3 路由参数
+### 路由参数
 
 Django2.0以上版本：
 
@@ -953,7 +920,7 @@ Django2.0一下版本：
 
 说明：Django2.0一下版本的`url`和2.0版本以上的`re_path`用法一样
 
-## 10. 中间件
+## 中间件
 
 中间件是在执行功能代码之前执行的代码：
 
@@ -1010,7 +977,7 @@ def check_loign_middleware(func):
         return warpper
 ```
 
-## 11. 图片上传和图片加载
+## 图片上传和图片加载
 
 图片上传：
 
@@ -1052,7 +1019,7 @@ from django.contrib.staticfiles.urls import static
 urlpatterns += static(MEDIA_URL, document_root=MEDIA_ROOT)
 ```
 
-## 12. 装饰器
+## 装饰器
 
 `cache_page()`
 
@@ -1066,7 +1033,7 @@ urlpatterns += static(MEDIA_URL, document_root=MEDIA_ROOT)
 method_decorator(decorator=cache_page(cache='default', timeout=300), name='list')
 ```
 
-## 13. 分页
+## 分页
 
 ```python
 from django.core.paginator import Paginator
@@ -1083,15 +1050,13 @@ page2.previous_page_number()  # 上一页的页码
 page2.next_page_number()  # 下一页的页码
 ```
 
-## 14. 前端集成富文本编辑器
+## 前端集成富文本编辑器
 
 使用KindEditor
 
-> 1. 下载解压后放在static/js/ 目录下
->
-> 2. 有用的文件有：/lang/， /plugins/， /themes/， /kindeditor-all-min.js/
->
-> 3. 前端页面：
+1. 下载解压后放在static/js/ 目录下
+2. 有用的文件有：/lang/， /plugins/， /themes/， /kindeditor-all-min.js/
+3. 前端页面：
 ```html
 <textarea name="intro" id="intro"></textarea>
 <script src="{% static 'js/kindeditor-4.1.12/kindeditor-all-min.js' %}"></script>
@@ -1106,9 +1071,9 @@ page2.next_page_number()  # 下一页的页码
 </script>
 ```
 
-# 二. djangorestframework框架
+# djangorestframework框架
 
-## 1. 介绍
+## 介绍
 
 前后端分离开发框架，主要用于后端数据返回
 
@@ -1119,7 +1084,7 @@ pip install djangorestframework==3.10.3
 pip install django-filter
 ```
 
-## 2. 配置与结构
+## 配置与结构
 
 ```python
 # 项目名>setting>INSTALLED_APP中添加：
@@ -1259,9 +1224,9 @@ class ArticleFilter(django_filters.rest_framework.FilterSet):
 >   2.  `title = django_filters.CharFilter(lookup_expr='icontains')` - `lookup_expr`后接为模糊查询条件 contains、gt、gte、lt、lte
 >   3.  `is_delete = django_filters.CharFilter(method='filter_is_delete')` - `method`后接自定义查询方法名
 
-## 3. CRUD解析
+## CRUD解析
 
-### 3.1 创建
+### 创建
 
 CreateModelMixin 使用POST请求，
 
@@ -1298,7 +1263,7 @@ def create(self, request, *args, **kwargs):
         return Response(errors)
 ```
 
-### 3.2 查询
+### 查询
 
 ListModelMixin 使用GET请求
 
@@ -1324,7 +1289,7 @@ def list(self, request, *args, **kwargs):
     return Response(serializer.data)
 ```
 
-### 3.3 更新
+### 更新
 
 UpdateModelMixin 使用PUT请求或者PATCH请求
 
@@ -1353,7 +1318,7 @@ def update(self, request, *args, **kwargs):
     return Response({'msg': '修改数据成功'})
 ```
 
-### 3.4 删除
+### 删除
 
 DestroyModelMixin 请求方式为DELETE
 
@@ -1367,7 +1332,7 @@ def destroy(self, request, *args, **kwargs):
     return Response({'msg': '删除成功'})
 ```
 
-### 3.5 获取单一对象详情
+### 获取单一对象详情
 
 RetrieveModelMixin 请求方式为GET
 
@@ -1385,7 +1350,7 @@ def retrieve(self, request, *args, **kwargs):
     return Response(serializer.data)
 ```
 
-### 3.6 CRUD中用到的方法
+### CRUD中用到的方法
 
 语法：`serializer = self.get_serializer(data=request.data)`
 
@@ -1401,7 +1366,7 @@ def retrieve(self, request, *args, **kwargs):
 
 说明：用来获取所有的查询对象，等同于`User.objects.all()`
 
-## 4. 序列化
+## 序列化
 
 序列化结果对象的data属性为序列化后的数据
 
@@ -1437,7 +1402,7 @@ def to_representation(self, instance):
     return data
 ```
 
-## 5. 过滤
+## 过滤
 
 主要针对条件查询，将条件放在过滤类中，就可以进行条件查询
 
@@ -1501,7 +1466,7 @@ class ArticleFilter(django_filters.rest_framework.FilterSet):
 >   2.  `title = django_filters.CharFilter(lookup_expr='icontains')` - `lookup_expr`后接为模糊查询条件 contains、gt、gte、lt、lte
 >   3.  `is_delete = django_filters.CharFilter(method='filter_is_delete')` - `method`后接自定义查询方法名
 
-## 6. 特殊url实现
+## 特殊url实现
 
 **装饰器action装饰方法，装饰器中的detail参数为False时，函数主键不能作为url中的一部分**
 
@@ -1548,9 +1513,9 @@ def articles(self, request, pk):
     return Response(serializer.data)
 ```
 
-## 7. 请求方法装饰器
+## 请求方法装饰器
 
-### 7.1 装饰视图函数
+### 装饰视图函数
 
 此方法可以更灵活的使用调用模型
 
@@ -1606,7 +1571,7 @@ class ArticleMsg(APIView):
 
 说明：函数名表示请求方式
 
-### 7.2 装饰类的装饰器
+### 装饰类的装饰器
 
 ```python
 # api_view只能装饰函数，不能装饰类
@@ -1618,7 +1583,7 @@ class SearchViewSet(CacheResponseMixin, ModelViewSet):
     pagination_class = CustomPagination
 ```
 
-## 8. 自定义返回格式
+## 自定义返回格式
 
 `项目名>setting`最后添加：
 
@@ -1699,7 +1664,7 @@ class ParamsException(APIException):
         self.detail = msg
 ```
 
-## 9. 分页
+## 分页
 
 指定某一个类使用分页的方法：
 
@@ -1754,7 +1719,7 @@ class AgentCurcorPagination(CorsurPagination):
     ordering = '-agentid'
 ```
 
-## 10. 登录和注销
+## 登录和注销
 
 登录的视图函数
 
@@ -1781,7 +1746,7 @@ def login(self, request):
 
 注销方法：将redis中的token值删除掉
 
-## 11. 用户验证
+## 用户验证
 
 重写authenticate验证函数
 
@@ -1830,7 +1795,7 @@ REST_FRAMEWORK = {
 }
 ```
 
-## 12. 跨域
+## 跨域
 
 跨域的意思为**请求方式、请求地址、请求端口**中任意有一项不一样的跨域名访问。
 
@@ -1894,7 +1859,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 说明：**中间键的添加位置很重要**。
 
-## 13. 访问节流
+## 访问节流
 
 ```python
 REST_FRAMEWORK = {
@@ -1910,7 +1875,7 @@ REST_FRAMEWORK = {
 }
 ```
 
-## 14. 任务异步化
+## 任务异步化
 
 使用前安装`pip install celery`
 
@@ -1940,9 +1905,9 @@ backend = "redis://username:password@ip地址:6379/数据库名"
 持久化到数据库
 
 
-# 三. Vue框架
+# Vue框架
 
-## 1. 安装
+## 安装
 
 安装vue框架首先需要安装node.js
 
@@ -1982,7 +1947,7 @@ backend = "redis://username:password@ip地址:6379/数据库名"
 
 `cnpm run dev` - 启动vue项目
 
-## 2. 项目结构
+## 项目结构
 
 ```
 build: 项目构建(webpack)相关代码
@@ -2005,7 +1970,7 @@ README.md: 项目的说明文档，markdown 格式
 
 vue中页面都是继承自index.html；index.html的body中有个div，id为app，同App.vue中的body关联，其他页面在App.vue中注册即可生成相应完整的html。
 
-## 3. 路由
+## 路由
 
 要生成一个路由，需要进行以下配置：
 
@@ -2026,7 +1991,7 @@ vue中超链接一般使用`<router-link to="/articles">文章列表</router-lin
 
 router-link生成的路由在`#`后面，如果使用a标签生成的路由在`#`前面
 
-## 4. 创建组件
+## 创建组件
 
 在conponent中创建一个组件用于定制页面中的具体内容
 
@@ -2055,7 +2020,7 @@ export default{
 </style>
 ```
 
-## 5. vue封装的ajax
+## vue封装的ajax
 
 使用前需要先安装
 
@@ -2109,9 +2074,9 @@ this.axios.post(url, params)
 	})
 ```
 
-# 四. Flask
+# Flask
 
-## 1. 安装配置
+## 安装配置
 
 ```
 mkdir src - 创建一个源代码路径
@@ -2133,7 +2098,7 @@ flask默认的模板文件夹为templates，默认静态文件夹为static，位
 url_for('static', filename='/js/test.js')
 ```
 
-## 2. flask项目结构
+## flask项目结构
 
 ```python
 from flask import Flask, request
@@ -2169,7 +2134,7 @@ if __name__ == '__main__':
     main()
 ```
 
-## 3. 程序和请求上下文
+## 程序和请求上下文
 
 current_app	    程序上下文	当前激活程序的程序实例
 
@@ -2187,7 +2152,7 @@ session			请求上下文	回话对象
 
 `request.header.get('参数名')` - 获取请求头里面的参数
 
-## 4. 路由
+## 路由
 
 flask路由由视图的装饰器来决定，如果需要分模块路由转发需要用蓝图进行注册。
 
@@ -2215,7 +2180,7 @@ def index(username):
 | `uuid`  | 接受 UUID 字符串                    |
 | string  | （缺省值） 接受任何不包含斜杠的文本 |
 
-## 5. 响应
+## 响应
 
 **return响应**
 
@@ -2282,7 +2247,7 @@ def errorhandler(e):
     return render_template('500.html'), 500
 ```
 
-## 6. Flask-Script启动参数
+## Flask-Script启动参数
 
 方便在启动flask程序的时候进行参数传递
 
@@ -2301,7 +2266,7 @@ manager.run()
 
 `python hello.py runserver -h 0.0.0.0 -p 5001 -d` - -h为指定能访问的IP地址，-p为指定端口，-d为开启debug模式， --threaded为开启多线程模式
 
-## 7. jinja2模板
+## jinja2模板
 
 Flask 默认在程序相同文件夹中的templates子文件夹中找模板
 
@@ -2365,7 +2330,7 @@ last 最后一个字母
 
 继承父坑语句：`{{ super() }}`
 
-## 8. 获取散列密码
+## 获取散列密码
 
 使用前需要先导入包`from werkzeug.security import generate_password_hash, check_password_hash`
 
@@ -2379,7 +2344,7 @@ method 和salt_length 的默认值就能满足大多数需求。
 
 说明：这个函数的参数是从数据库中取回的密码散列 值和用户输入的密码。返回值为True 表明密码正确
 
-## 9. SQLAlchemy
+## SQLAlchemy
 
 使用前安装包
 ```
@@ -2642,7 +2607,7 @@ python manage.py db downgrade 执行迁移文件中的降级
 
 python manage.py db —help 帮助文档
 
-## 11. blueprint蓝图
+## blueprint蓝图
 
 使用前安装`pip install flask-blueprint`
 
@@ -2682,7 +2647,7 @@ from application.users.views import users
 app.register_blueprint(users, url_prefix='/users')
 ```
 
-## 12. flask-wtf表单验证
+## flask-wtf表单验证
 
 使用前先安装`pip install flask-wtf`
 
@@ -2803,7 +2768,7 @@ URL	有效的URL
 Regexp	正则验证
 ```
 
-## 13. 使用flask-login认证用户
+## 使用flask-login认证用户
 
 使用前先安装`pip install flask-login`
 
@@ -2864,7 +2829,7 @@ def secret():
  return '只有登录以看'
 ```
 
-## 14. 分页
+## 分页
 
 获取需要进行分页的信息：
 
@@ -2884,7 +2849,7 @@ pagination = Users.query.order_by(Users.id.desc()).paginate(page, per_page=curre
 
 `pagination.total` - 获取总共数据条数
 
-## 15. 测试
+## 测试
 
 为方便测试时使用不同的配置，如数据库，CSRF验证等。需要使用工厂模式创建原对象。
 
@@ -3112,7 +3077,7 @@ def test_invalid_register(client):
         Users.query.filter_by(username=data['username']).one()
 ```
 
-## 16. rest接口开发
+## rest接口开发
 
 **安装flask-marshmallow，映射models到json输出**
 
@@ -3515,7 +3480,7 @@ create_access_token(identity=current_user, fresh=False)
 
 设置新鲜的token才能访问的视图函数，将装饰器改为`@fresh_jwt_required`
 
-## 17. 文件上传
+## 文件上传
 
 在模型中添加图片字段
 
@@ -3544,9 +3509,9 @@ avatar = fields.String(dump_only=True)
 >
 >文件对象.save(本地路径) - 将收到的文件保存
 
-# 五. scrapy
+# scrapy
 
-## 1. urllib.request
+## urllib.request
 
 urllib为自带库，不需要安装，使用前先导入：`import urllib.request`
 
@@ -3611,7 +3576,7 @@ response.getheaders('Server') - 获取指定参数的响应头信息
 response.read() - 获取响应体，为二进制数据，需要解码
 ```
 
-## 2. requests
+## requests
 
 安装库：`pip install requests`
 
@@ -3663,7 +3628,7 @@ response.cookies['keys'] - 获取指定的cookies值
 
 所有Requests显式抛出的异常都继承自 requests.exceptions.RequestException 。
 
-## 3. 文档解析
+## 文档解析
 
 **xpath**
 
@@ -3801,7 +3766,7 @@ print(soup.select('#list-2 h1')[0].attrs)
 print(soup.select('#list-2 h1')[0].get_text())
 ```
 
-## 4. selenium
+## selenium
 
 安装库：`pip install selenium`
 
@@ -3982,7 +3947,7 @@ send_keys(*keys_to_send) ——发送某个键到当前焦点的元素
 send_keys_to_element(element, *keys_to_send) ——发送某个键到指定元素
 ```
 
-## 5. scrapy框架简介
+## scrapy框架简介
 
 ![scrapy框架结构](./img/spider_scrapy.png)
 
@@ -4163,5 +4128,3 @@ datetime.date(2012, 7, 27)
 >>> forgery_py.time.zone()
 'Melbourne'
 ```
-
-# 跳到最后
