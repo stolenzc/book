@@ -22,7 +22,7 @@ gitbook 默认内置7个插件，分别是
 - `github` - 在右上角添加 github 图标
 - `-highlight` - 删除自带的语法高亮插件
 - `prism` - 代码高亮插件
-- `anchor-navigation-ex` - 悬浮目录和回到顶部
+- `anchor-navigation-ex` - 悬浮目录和回到顶部，给目录标号，配置[插件功能定制，参数详解](https://github.com/zq99299/gitbook-plugin-anchor-navigation-ex/blob/master/doc/config.md)
 - `theme-comscore` - 主体插件，不同层级标题显示不同颜色
 - `intopic-toc` - 不用toc自动生成目录
 - `tbfed-pagefooter` - 页面添加页脚
