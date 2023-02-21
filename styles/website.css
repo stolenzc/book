@@ -2,6 +2,6 @@
     padding: .2em;
     margin: 0;
     font-size: .85em;
-    background-color: #e0e0e0;
-    color: #ff008c
+    /* background-color: #e0e0e0; */
+    color: #ff008c !important
 }
