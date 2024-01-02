@@ -7,6 +7,7 @@
 python3.7和django1.11.11版本冲突，解决办法，运行报错后点击报错代码路径将该行最后的逗号删除即可
 
 django2.2和pymysql冲突，解决办法：
+
 ```python
 # 项目名>init
 import pymysql
@@ -33,43 +34,31 @@ return query
 
 ### 尚未创建项目
 
-`python3 -m venv venv` 或 `virtualenv --python=python的安装路径 venv` - 创建虚拟环境
-
-`pip install django==2.1.13 pymysql` - 虚拟环境下安装相关依赖项
-
-`django-admin --version` - 查看django版本
-
-`source venv/bin/activate` 或 `"venv/Scripts/activate"` - 激活虚拟环境
-
-`django-admin startproject 项目名` - 创建项目
-
-`cd 项目名` - 进入项目文件夹
-
-`pip freeze > requirements.txt` - 将依赖项写入到requirements.txt文件中
+- `python3 -m venv venv` 或 `virtualenv --python=python的安装路径 venv` - 创建虚拟环境
+- `pip install django==2.1.13 pymysql` - 虚拟环境下安装相关依赖项
+- `django-admin --version` - 查看django版本
+- `source venv/bin/activate` 或 `"venv/Scripts/activate"` - 激活虚拟环境
+- `django-admin startproject 项目名` - 创建项目
+- `cd 项目名` - 进入项目文件夹
+- `pip freeze > requirements.txt` - 将依赖项写入到requirements.txt文件中
 
 ### 已有项目和虚拟环境
 
-`pip install django==2.1.13 pymysql` - 安装相关依赖项
-
-`django-admin --version` - 查看django版本
-
-`django-admin startproject 项目名 .` - 在当前路径下创建Django项目
+- `pip install django==2.1.13 pymysql` - 安装相关依赖项
+- `django-admin --version` - 查看django版本
+- `django-admin startproject 项目名 .` - 在当前路径下创建Django项目
 
 ### 从版本库创建项目
 
-`git clone 项目地址` - 克隆项目
-
-`cd 克隆的项目文件夹下` - 进入项目文件夹
-
-`pip3 install virtualenv` - 安装创建虚拟环境模块
-
-`python3 -m venv venv` `virtualenv --python=python的安装路径 venv` - 创建虚拟环境
+- `git clone 项目地址` - 克隆项目
+- `cd 克隆的项目文件夹下` - 进入项目文件夹
+- `pip3 install virtualenv` - 安装创建虚拟环境模块
+- `python3 -m venv venv` `virtualenv --python=python的安装路径 venv` - 创建虚拟环境
 
 说明：如果有多个python，需要指定python安装环境，如果只有一个则可以不写
 
-`source venv/bin/activate` `"venv/Scripts/activate"` - 激活虚拟环境
-
-`pip install -r requriements.txt` - 重建环境依赖项
+- `source venv/bin/activate` `"venv/Scripts/activate"` - 激活虚拟环境
+- `pip install -r requriements.txt` - 重建环境依赖项
 
 如果安装mysqlclient报错需要先安装:`yum install mysql-devel`
 
@@ -77,17 +66,13 @@ return query
 
 一个django项目中可以有多个应用
 
-`python manage.py startapp 应用名` `django-admin startapp 应用名` - 创建应用
-
-`python manage.py runserver` - 运行应用
-
-默认：`ip 127.0.0.1 port:8000`
-
-`python manage.py runserver 0.0.0.0:7999` - 指定端口和ip运行应用
+- `python manage.py startapp 应用名` `django-admin startapp 应用名` - 创建应用
+- `python manage.py runserver` - 运行应用，默认在：`ip 127.0.0.1 port:8000`
+- `python manage.py runserver 0.0.0.0:7999` - 指定端口和ip运行应用
 
 ### 其他命令
 
-`python manage.py clearsessions` - 清除缓存，会删除数据库中过期session。
+- `python manage.py clearsessions` - 清除缓存，会删除数据库中过期session。
 
 ## 配置
 
@@ -159,7 +144,7 @@ class Fruit(models.Model):
 
 `python manage.py makemigrations 应用名` - 生成迁移文件
 
-`python manage.py migrate`	进行数据库迁移
+`python manage.py migrate` - 进行数据库迁移
 
 ### 数据库模型反向迁移
 
