@@ -26,6 +26,7 @@ gitbook 默认内置7个插件，分别是
 - `theme-comscore` - 主体插件，不同层级标题显示不同颜色
 - `intopic-toc` - 不用toc自动生成目录
 - `tbfed-pagefooter` - 页面添加页脚
+- `expandable-chapters` - 折叠章节
 
 插件查找链接
 
